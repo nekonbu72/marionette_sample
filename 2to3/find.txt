@@ -1,0 +1,15 @@
+.\.venv\Lib\site-packages\marionette_driver\expected.py:from . import errors       # nekonbu72
+.\.venv\Lib\site-packages\marionette_driver\expected.py:# from . import errors  # nekonbu72
+.\.venv\Lib\site-packages\marionette_driver\marionette.py:                data = data.decode('utf-8')  # nekonbu72 +
+.\.venv\Lib\site-packages\marionette_driver\marionette.py:    def execute_js_script(self, script, script_args=(), async_=True, # async=True, # nekonbu72 +-
+.\.venv\Lib\site-packages\marionette_driver\marionette.py:                # "async": async, # nekonbu72 -
+.\.venv\Lib\site-packages\marionette_driver\marionette.py:                "async": async_, # nekonbu72 +
+.\.venv\Lib\site-packages\marionette_driver\transport.py:                chunk = chunk.decode('utf-8')  # nekonbu72 +
+.\.venv\Lib\site-packages\marionette_driver\transport.py:                payload[totalsent:].encode('utf-8'))  # nekonbu72 +
+.\.venv\Lib\site-packages\mozprocess\processhandler.py:        except TypeError: # nekonbu72 +
+.\.venv\Lib\site-packages\mozprocess\processhandler.py:                (line + '\n'.encode('utf8')).decode('utf8'))  # nekonbu72 +
+.\.venv\Lib\site-packages\mozprocess\winprocess.py:            try:  # nekonbu72 +
+.\.venv\Lib\site-packages\mozprocess\winprocess.py:            except:  # nekonbu72 +
+.\.venv\Lib\site-packages\mozprocess\winprocess.py:                self._as_parameter_ = LPCWSTR(None)  # nekonbu72 +
+.\.venv\Lib\site-packages\six.py:        except AttributeError:  # nekonbu72 +
+.\.venv\Lib\site-packages\six.py:            raise tp(value).with_traceback(tb)  # nekonbu72 +
