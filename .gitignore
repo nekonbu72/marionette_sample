@@ -4,4 +4,4 @@ build
 dist
 src/__pycache__
 gecko.log
-download
+downloads
