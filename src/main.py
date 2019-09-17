@@ -9,10 +9,21 @@ from marionette_driver.marionette import Marionette
 import mime
 
 BINARY = "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
-PROFILE = "C:\\Users\\s150209\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\5332jmf7.default"
+# PROFILE = "C:\\Users\\s150209\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\5332jmf7.default"
+PROFILE = "C:\\Users\\Tomoyuki Nakamura\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\2wsrx870.Default User"
 DOWNLOADS = "downloads"
 
-client = Marionette(bin=BINARY, gecko_log="-")  # , profile=PROFILE)
+# ff52 では mimeTypes.rdf, ff60 では handlers.json に
+# ファイル読み込み時の動作設定を格納している
+DOWNLOAD_ACTION_PREFS = ["mimeTypes.rdf", "handlers.json"]
+
+client = Marionette(bin=BINARY, gecko_log="-", profile=PROFILE)
+
+for name in DOWNLOAD_ACTION_PREFS:
+    p = os.path.join(client.profile_path, name)
+    if os.path.exists(p):
+        os.remove(p)
+
 client.start_session()
 
 # proxy 関係の設定
@@ -22,7 +33,7 @@ client.start_session()
 # client.set_pref("signon.autologin.proxy", True)
 
 # download 関係の設定
-# https://developer.mozilla.org/ja/docs/Download_Manager_preferences
+
 # ファイルを自動的にダウンロードディレクトリに保存するかどうかを示す真偽値。
 # この値が false の場合、ユーザは処理方法を尋ねられます。
 client.set_pref("browser.download.useDownloadDir", True)
