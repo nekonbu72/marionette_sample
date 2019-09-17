@@ -2,8 +2,6 @@ import os
 from pathlib import Path
 from time import sleep
 
-from marionette_driver.by import By
-from marionette_driver.keys import Keys
 from marionette_driver.marionette import Marionette
 
 import mime
@@ -54,7 +52,7 @@ client.navigate("http://xcal1.vodafone.co.uk/")
 # client.navigate("http://wwwi.sedi.jp/eud_log/")
 
 # レンダリング待ち
-sleep(5)
+sleep(3)
 
 # downloads フォルダを空にする
 ls = os.listdir(DOWNLOADS)
@@ -62,9 +60,22 @@ for f in ls:
     os.remove(os.path.join(DOWNLOADS, f))
 print(f"cleaned {DOWNLOADS} dir")
 
-client.find_element(
-    "css selector", "table.dltable > tbody:nth-child(1) > tr:nth-child(16) > td:nth-child(1) > a:nth-child(1)").click()
-# "css selector", "div.contentbody:nth-child(6) > a:nth-child(5)").click()
+with open('js\\click.js') as file:
+    dt = file.read()
+
+# client.execute_js_script(dt)
+
+# JS = """
+#     document.querySelector("body > table > tbody > tr:nth-child(16) > td:nth-child(1) > a").click();
+#     """
+# JS = """
+#     alert("Hello, marionette!");
+# """
+# JS = """
+#     console.log("Hello, marionette!");
+#     """
+JS = 'document.querySelector("body > table > tbody > tr:nth-child(16) > td:nth-child(1) > a").click()'
+client.execute_script(script=JS)
 
 # ダウンロード待ち
 sleep(15)
