@@ -7,8 +7,8 @@ from marionette_driver.marionette import Marionette
 import mime
 
 BINARY = "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
-# PROFILE = "C:\\Users\\s150209\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\5332jmf7.default"
-PROFILE = "C:\\Users\\Tomoyuki Nakamura\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\2wsrx870.Default User"
+PROFILE = "C:\\Users\\s150209\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\5332jmf7.default"
+# PROFILE = "C:\\Users\\Tomoyuki Nakamura\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\2wsrx870.Default User"
 DOWNLOADS = "downloads"
 
 # ff52 では mimeTypes.rdf, ff60 では handlers.json に
@@ -63,20 +63,8 @@ print(f"cleaned {DOWNLOADS} dir")
 with open('js\\click.js') as file:
     dt = file.read()
 
-# client.execute_js_script(dt)
-
-# JS = """
-#     document.querySelector("body > table > tbody > tr:nth-child(16) > td:nth-child(1) > a").click();
-#     """
-# JS = """
-#     alert("Hello, marionette!");
-# """
-# JS = """
-#     console.log("Hello, marionette!");
-#     """
-JS = 'document.querySelector("body > table > tbody > tr:nth-child(16) > td:nth-child(1) > a").click()'
-client.execute_script(script=JS)
+client.execute_script(dt)
 
 # ダウンロード待ち
-sleep(15)
+sleep(30)
 client.quit()
