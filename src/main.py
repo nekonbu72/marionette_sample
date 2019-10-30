@@ -1,12 +1,13 @@
 import os
 import sys
 from pathlib import Path
-from time import sleep
 
-from marionette_driver.marionette import Marionette, Actions
+from marionette_driver.marionette import Marionette
 
 from download import setup_download_folder
-from mime import mimeTypes
+from javascript import load_script
+from mime import MIME_TYPES
+from userprofile import profile_dir
 
 BINARY = "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
 if not os.path.isfile(BINARY):
@@ -16,21 +17,20 @@ if not os.path.isfile(BINARY):
 # geckodriver の log ファイル出力を抑止する
 NO_LOG = "-"
 
-PROFILE = "C:\\Users\\s150209\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\5332jmf7.default"  # 会社PC
-# PROFILE = "C:\\Users\\Tomoyuki Nakamura\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\2wsrx870.Default User"  # 自宅PC
-if not os.path.isdir(PROFILE):
-    print(f"firefox profile ({PROFILE}) does not exist")
+profile = profile_dir()
+if not os.path.isdir(profile):
+    print(f"firefox profile ({profile}) does not exist")
     sys.exit(0)
 
-client = Marionette(bin=BINARY, gecko_log=NO_LOG, profile=PROFILE)
+client = Marionette(bin=BINARY, gecko_log=NO_LOG, profile=profile)
 
 DOWNLOADS = "downloads"
 setup_download_folder(DOWNLOADS)
 
-# firefox52 では mimeTypes.rdf, firefox60 では handlers.json に
+# firefox52 では MIME_TYPES.rdf, firefox60 では handlers.json に
 # ファイル読み込み時の動作設定が格納されている
 # 自動ダウンロードするため既存の設定は削除する
-DOWNLOAD_ACTION_PREFS = ["mimeTypes.rdf", "handlers.json"]
+DOWNLOAD_ACTION_PREFS = ["MIME_TYPES.rdf", "handlers.json"]
 for name in DOWNLOAD_ACTION_PREFS:
     p = os.path.join(client.profile_path, name)
     if os.path.exists(p):
@@ -42,52 +42,25 @@ client.start_session()
 client.set_pref("browser.download.useDownloadDir", True)
 # 自動ダウンロードする MIME タイプを指定
 client.set_pref("browser.helperApps.neverAsk.saveToDisk",
-                ",".join(mimeTypes))
+                ",".join(MIME_TYPES))
 # ファイルをダウンロードする既定のフォルダを示します。
 # 0 の場合はデスクトップ、1 の場合はシステムの既定ダウンロードフォルダ、2 の場合はユーザ定義フォルダ。
 client.set_pref("browser.download.folderList", 2)
 # ダウンロードされたファイルの保存先としてユーザが選択したローカルフォルダ。
 client.set_pref("browser.download.dir", str(Path(DOWNLOADS).resolve()))
 
+DOWNLOAD_TEST = "http://xcal1.vodafone.co.uk/"
+client.navigate(DOWNLOAD_TEST)
 
-class MarionetteCommand:
-    def __init__(self, type: str, param: str):
-        self.__type = type
-        self.__param = param
+PRELOAD_SCRIPT = "js\\myQuerySelector.js"
+script = load_script(PRELOAD_SCRIPT)
+if len(script) > 0:
+    client.execute_script(script, new_sandbox=False)
 
-    @property
-    def type(self):
-        return self.__type
-
-    @property
-    def param(self):
-        return self.__param
-
-
-cmd_list = [MarionetteCommand("py", 'client.navigate("http://xcal1.vodafone.co.uk/")'),
-            MarionetteCommand("wait", "5"),  # レンダリング待ち
-            MarionetteCommand("js", '''
-                                    const elm = document.querySelector(
-                                        "body > table > tbody > tr:nth-child(16) > td:nth-child(1) > a"
-                                        );
-                                    elm.click();
-                                    '''),
-            MarionetteCommand("wait", "20")]  # ダウンロード待ち
-
-for cmd in cmd_list:
-    if cmd.type == "js":
-        client.execute_script(cmd.param)
-
-    elif cmd.type == "wait":
-        action = Actions(client)
-        action.wait(int(cmd.param))
-        action.perform()
-
-    elif cmd.type == "py":
-        exec(cmd.param)
-
-    else:
-        pass
+TEST_SCRIPT = '''
+    document.$2(".tgt2").then(console.log)
+    '''
+client.execute_script(TEST_SCRIPT, new_sandbox=False)
 
 client.quit()
 print("complete")

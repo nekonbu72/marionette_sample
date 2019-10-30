@@ -1,7 +1,7 @@
 
 # https: // developer.mozilla.org/ja/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Complete_list_of_MIME_types
 
-mimeTypes = [
+MIME_TYPES = [
     "application/epub+zip",
     "application/gzip",
     "application/java-archive",
