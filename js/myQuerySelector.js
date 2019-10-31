@@ -55,7 +55,6 @@
   const querySelector2 = (selectors, delay = 2, retry = 5) => {
     return retryAsync(querySelectorWrapper, notNull, delay, retry, selectors);
   };
-
   const $2 = querySelector2;
 
   const querySelectorAll2 = (selectors, delay = 2, retry = 5) => {
@@ -67,20 +66,26 @@
       selectors
     );
   };
-
   const $$2 = querySelectorAll2;
 
+  Document.prototype.querySelector2 = querySelector2;
+  Document.prototype.$2 = $2;
+  Document.prototype.querySelectorAll2 = querySelectorAll2;
+  Document.prototype.$$2 = $$2;
+})();
+
+(() => {
   const addTgt2 = () => {
     const newNode = document.createElement("div");
     newNode.className = "tgt2";
     newNode.textContent = "tgt2";
     document.body.append(newNode);
   };
-
-  Document.prototype.$2 = $2;
-  Document.prototype.$$2 = $$2;
-
   window.setTimeout(addTgt2, 5000);
+
+  window.addEventListener("load", () => {
+    console.log("loaded");
+  });
 
   const observer = new MutationObserver(records => {
     console.log("mutated");
