@@ -1,14 +1,14 @@
-import os
+from pathlib import Path
 
 
 def setup_download_folder(dir: str):
+    p = Path(dir)
     # dir フォルダがなければ作成
-    if not os.path.isdir(dir):
-        os.mkdir(dir)
+    if not p.is_dir():
+        p.mkdir()
         print(f"created {dir} dir")
-
-    # dir フォルダを空にする
-    ls = os.listdir(dir)
-    for f in ls:
-        os.remove(os.path.join(dir, f))
-    print(f"cleaned up {dir} dir")
+    else:
+        # dir フォルダを空にする
+        for f in p.iterdir():
+            f.unlink()
+        print(f"cleaned up {dir} dir")
